@@ -1,5 +1,8 @@
 package com.example.joe.photogallery;
 
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,6 +14,10 @@ import java.net.URL;
  * Created by Joe on 4/24/2016.
  */
 public class FlickrFetchr {
+
+    private static final String TAG = "FlickrFetchr";
+
+    private static final String API_KEY = "6d2eb8f12634e3660011a6f4056bd4f6";
 
     public byte[] getUrlBytes(String urlSpec) throws IOException{
         URL url = new URL(urlSpec);
@@ -39,5 +46,22 @@ public class FlickrFetchr {
 
     public String getUrlString(String urlSpec) throws IOException{
         return new String(getUrlBytes(urlSpec));
+    }
+
+    public void fetchItems(){
+        try {
+            String url = Uri.parse("https://api.flickr.com/services/rest/")
+                    .buildUpon()
+                    .appendQueryParameter("method", "flickr.photos.getRecent")
+                    .appendQueryParameter("api_key", API_KEY)
+                    .appendQueryParameter("format", "json")
+                    .appendQueryParameter("nonjsoncallback", "1")
+                    .appendQueryParameter("extras", "url_s")
+                    .build().toString();
+            String jsonString = getUrlString(url);
+            Log.i(TAG, "Received JSON: " + jsonString);
+        }catch (IOException ioe){
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
     }
 }
