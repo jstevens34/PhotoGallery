@@ -1,11 +1,16 @@
 package com.example.joe.photogallery;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Joe on 4/25/2016.
  */
 public class GalleryItem {
+    @SerializedName("title")
     private String mCaption;
+    @SerializedName("id")
     private String mId;
+    @SerializedName("url_s")
     private String mUrl;
 
     @Override

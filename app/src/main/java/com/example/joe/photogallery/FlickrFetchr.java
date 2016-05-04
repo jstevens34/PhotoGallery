@@ -3,6 +3,8 @@ package com.example.joe.photogallery;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,15 +89,14 @@ public class FlickrFetchr {
         for (int i = 0; i < photoJsonArray.length(); i++){
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
 
-            GalleryItem item = new GalleryItem();
-            item.setId(photoJsonObject.getString("id"));
-            item.setCaption(photoJsonObject.getString("title"));
-
             if(!photoJsonObject.has("url_s")){
                 continue;
             }
+            
+            GalleryItem item;
 
-            item.setUrl(photoJsonObject.getString("url_s"));
+            item = new Gson().fromJson(photoJsonObject.toString(), GalleryItem.class);
+
             items.add(item);
         }
     }
