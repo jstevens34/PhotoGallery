@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -22,11 +23,14 @@ import java.util.List;
 public class PhotoGalleryFragment extends Fragment{
 
     private static final String TAG = "PhotoGalleryFragment";
+    private static final int COLUMN_WIDTH = 300;
 
     private RecyclerView mPhotoRecyclerView;
 
     private List<GalleryItem> mItems = new ArrayList<>();
 
+    private int pageNum = 1;
+    private int columnNum = 3;
     public static PhotoGalleryFragment newInstance(){
         return new PhotoGalleryFragment();
     }
@@ -47,7 +51,31 @@ public class PhotoGalleryFragment extends Fragment{
 
         mPhotoRecyclerView = (RecyclerView) v.findViewById(
                 R.id.fragment_photo_gallery_recycler_view);
-        mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columnNum));
+        mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1)) {
+                    pageNum++;
+                    new FetchItemsTask().execute();
+                }
+            }
+        });
+        mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int viewWidth = mPhotoRecyclerView.getWidth();
+                int columnWidth = viewWidth/COLUMN_WIDTH;
+                Log.i(TAG, "onGlobalLayout: " + viewWidth  + " " + columnWidth);
+
+                if (columnWidth != columnNum ){
+                    columnNum = columnWidth;
+                    GridLayoutManager layoutManager= (GridLayoutManager)mPhotoRecyclerView.getLayoutManager();
+                    layoutManager.setSpanCount(columnNum);
+                }
+            }
+        });
         setupAdapter();
         return v;
     }
@@ -103,7 +131,7 @@ public class PhotoGalleryFragment extends Fragment{
 
         @Override
         protected List<GalleryItem> doInBackground(Void... params) {
-            return new FlickrFetchr().fetchItems();
+            return new FlickrFetchr().fetchItems(pageNum);
         }
 
         @Override
