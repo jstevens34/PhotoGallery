@@ -86,7 +86,7 @@ public class PhotoGalleryFragment extends Fragment{
                 super.onScrolled(recyclerView, dx, dy);
                 if (!recyclerView.canScrollVertically(1)) {
                     pageNum++;
-                    new FetchItemsTask().execute();
+                    updateItems();
                 }
             }
         });
@@ -156,11 +156,13 @@ public class PhotoGalleryFragment extends Fragment{
             default:
                 return super.onOptionsItemSelected(item);
         }
-       
+
     }
 
     private void updateItems() {
-        new FetchItemsTask().execute();
+        pageNum = 1;
+        String query = QueryPreferences.getStoredQuery(getActivity());
+        new FetchItemsTask(query).execute();
     }
 
     private void setupAdapter() {
@@ -213,15 +215,19 @@ public class PhotoGalleryFragment extends Fragment{
     }
 
     private class FetchItemsTask extends AsyncTask<Void, Void,List<GalleryItem>>{
+        private String mQuery;
+
+        public FetchItemsTask(String query){
+            mQuery = query;
+        }
 
         @Override
         protected List<GalleryItem> doInBackground(Void... params) {
-            String query = "robot"; // Just for testing
 
-            if(query == null){
+            if(mQuery == null){
                 return new FlickrFetchr().fetchRecentPhotos(pageNum);
             }else{
-                return new FlickrFetchr().searchPhotos(query, pageNum);
+                return new FlickrFetchr().searchPhotos(mQuery, pageNum);
             }
         }
 
