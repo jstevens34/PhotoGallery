@@ -246,4 +246,6 @@ public class PhotoGalleryFragment extends Fragment{
             setupAdapter();
         }
     }
+
+
 }
