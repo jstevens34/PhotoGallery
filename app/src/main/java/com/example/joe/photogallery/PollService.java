@@ -24,7 +24,7 @@ public class PollService extends IntentService{
         return new Intent(context, PollService.class);
     }
 
-    public static setServiceAlarm(Context context,Boolean isOn) {
+    public static void setServiceAlarm(Context context,Boolean isOn) {
         Intent i = PollService.newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
