@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by Joe on 4/24/2016.
  */
-public class PhotoGalleryFragment extends Fragment{
+public class PhotoGalleryFragment extends VisibleFragment{
 
     private static final String TAG = "PhotoGalleryFragment";
     private static final int COLUMN_WIDTH = 300;

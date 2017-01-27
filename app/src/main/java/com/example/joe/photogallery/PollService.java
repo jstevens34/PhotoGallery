@@ -22,8 +22,8 @@ public class PollService extends IntentService{
 
     private static final String TAG = "PollService";
 
-    private static final long POLL_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-
+    //private static final long POLL_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    private static final long POLL_INTERVAL = 1000 * 60; // 60 seconds
     public static final String ACTION_SHOW_NOTIFICATION = "com.example.joe.photogallery";
 
     public static Intent newIntent(Context context){
